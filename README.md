@@ -258,21 +258,27 @@ graph TB
 ### Why NATS is Better for This Use Case
 
 #### 1. **Game Rooms & Lobbies**
+
 With NATS subjects like `game.room1.state` and `game.room2.state`, you can easily support multiple concurrent games. WebSocket would require complex routing logic.
 
 #### 2. **State Synchronization**
+
 NATS pub/sub ensures all clients get the same state updates reliably, even when scaling to multiple backend instances.
 
 #### 3. **Scalability**
+
 Even though 4-8 players is small-scale, NATS makes it trivial to support multiple game instances or grow later.
 
 #### 4. **Performance**
+
 NATS is extremely fast (millions of messages/sec) with negligible latency. For game state updates every 16-33ms (30-60 FPS), this is perfect.
 
 #### 5. **Decoupling**
+
 Game logic can publish state changes without worrying about which clients are connected—NATS handles delivery.
 
 #### 6. **Feature Extensibility**
+
 Easy to add spectator mode, game replay, or server-side game state validation later.
 
 ---
@@ -390,6 +396,31 @@ backend/src/main/java/de/ostfalia/backend/
 - **NATS** - Message broker for pub/sub
 - **WebSocket** - Real-time bidirectional communication
 - **Java** - Primary programming language
+
+---
+
+## 🐳 Docker/Podman
+
+Build and run all services (frontend, backend, NATS):
+
+### Docker
+
+```bash
+docker-compose up --build
+
+```
+
+### Podman
+
+```bash
+podman-compose up --build
+```
+
+Access at:
+
+- Frontend: http://localhost:3000
+- Backend: http://localhost:42069
+- NATS: nats://localhost:4222
 
 ---
 
