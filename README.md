@@ -184,57 +184,6 @@ sequenceDiagram
     NATS->>NATS: Remove subscriber
 ```
 
-### Scalability Diagram
-
-```mermaid
-graph TB
-    subgraph "Multiple Backend Instances"
-        B1[Backend 1<br/>NatsPublisherService]
-        B2[Backend 2<br/>NatsPublisherService]
-        B3[Backend N<br/>NatsPublisherService]
-    end
-
-    subgraph "NATS Cluster"
-        N1[NATS Node 1]
-        N2[NATS Node 2]
-        N3[NATS Node 3]
-    end
-
-    subgraph "Client Groups"
-        subgraph "Game Room 1"
-            C1[Client 1-4]
-        end
-        subgraph "Game Room 2"
-            C2[Client 5-8]
-        end
-        subgraph "Game Room N"
-            C3[Client N]
-        end
-    end
-
-    B1 -->|Publish 'game.room1.state'| N1
-    B2 -->|Publish 'game.room2.state'| N2
-    B3 -->|Publish 'game.roomN.state'| N3
-
-    N1 <-->|Cluster Sync| N2
-    N2 <-->|Cluster Sync| N3
-    N1 <-->|Cluster Sync| N3
-
-    N1 -.->|Subscribe 'game.room1.state'| C1
-    N2 -.->|Subscribe 'game.room2.state'| C2
-    N3 -.->|Subscribe 'game.roomN.state'| C3
-
-    style B1 fill:#fff4e6
-    style B2 fill:#fff4e6
-    style B3 fill:#fff4e6
-    style N1 fill:#e8f5e9
-    style N2 fill:#e8f5e9
-    style N3 fill:#e8f5e9
-    style C1 fill:#e1f5ff
-    style C2 fill:#e1f5ff
-    style C3 fill:#e1f5ff
-```
-
 ### ✅ Advantages
 
 - **Pub/Sub Model** - Clean separation between publishers and subscribers
