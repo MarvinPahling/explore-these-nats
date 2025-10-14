@@ -24,6 +24,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("io.nats:jnats:2.20.4")
+    implementation("io.reactivex.rxjava3:rxjava:3.1.9")
 }
 
 tasks.withType<Test> {

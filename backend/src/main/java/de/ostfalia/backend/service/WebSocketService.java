@@ -1,6 +1,8 @@
 package de.ostfalia.backend.service;
 
 import de.ostfalia.backend.domain.Message;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,10 +11,15 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Bidirectional WebSocket messaging service supporting both sending and receiving.
+ * Manages multiple client connections and provides reactive message handling via RxJava.
+ */
 @Service
 public class WebSocketService extends AbstractConnectionService {
 
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final PublishSubject<String> messageSubject = PublishSubject.create();
 
     /**
      * Register a new WebSocket session
@@ -32,6 +39,15 @@ public class WebSocketService extends AbstractConnectionService {
         System.out.println("WebSocket session unregistered: " + session.getId());
     }
 
+    /**
+     * Handle incoming WebSocket message
+     * @param message The message received from a WebSocket client
+     */
+    public void handleIncomingMessage(String message) {
+        System.out.println("Received WebSocket message: " + message);
+        messageSubject.onNext(message);
+    }
+
     @Override
     public void sendMessage(Message message) throws Exception {
         String jsonMessage = toJson(message);
@@ -48,6 +64,11 @@ public class WebSocketService extends AbstractConnectionService {
     }
 
     @Override
+    public Observable<String> subscribe() {
+        return messageSubject;
+    }
+
+    @Override
     public void cleanup() {
         sessions.values().forEach(session -> {
             try {
@@ -59,6 +80,7 @@ public class WebSocketService extends AbstractConnectionService {
             }
         });
         sessions.clear();
+        messageSubject.onComplete();
         System.out.println("All WebSocket sessions closed");
     }
 
