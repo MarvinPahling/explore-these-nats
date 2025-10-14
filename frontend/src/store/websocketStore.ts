@@ -1,10 +1,11 @@
 import { create } from "zustand";
+import type { ConnectionStatus } from "../types/connection";
 
 interface WebSocketState {
 	value: number | null;
-	status: "Connecting..." | "Connected" | "Error" | "Disconnected";
+	status: ConnectionStatus;
 	setValue: (value: number | null) => void;
-	setStatus: (status: "Connecting..." | "Connected" | "Error" | "Disconnected") => void;
+	setStatus: (status: ConnectionStatus) => void;
 }
 
 export const useWebSocketStore = create<WebSocketState>((set) => ({

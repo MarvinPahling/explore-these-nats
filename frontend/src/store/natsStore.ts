@@ -1,10 +1,11 @@
 import { create } from "zustand";
+import type { ConnectionStatus } from "../types/connection";
 
 interface NatsState {
 	value: number | null;
-	status: "Connecting..." | "Connected" | "Error" | "Disconnected";
+	status: ConnectionStatus;
 	setValue: (value: number | null) => void;
-	setStatus: (status: "Connecting..." | "Connected" | "Error" | "Disconnected") => void;
+	setStatus: (status: ConnectionStatus) => void;
 }
 
 export const useNatsStore = create<NatsState>((set) => ({
