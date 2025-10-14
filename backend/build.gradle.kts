@@ -24,6 +24,9 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("io.nats:jnats:2.20.4")
+
+    // Logging dependencies (SLF4J is included with Spring Boot)
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 }
 
 tasks.withType<Test> {

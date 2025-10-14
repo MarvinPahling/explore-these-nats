@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ostfalia.backend.domain.Message;
 import io.nats.client.Connection;
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,14 +17,17 @@ import java.util.Random;
 @EnableScheduling
 public class NatsPublisherService {
 
+    private static final Logger log = LoggerFactory.getLogger(NatsPublisherService.class);
+    private static final String SUBJECT = "updates";
+
     private final Connection natsConnection;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Random random = new Random();
-    private static final String SUBJECT = "updates";
 
     @Autowired
     public NatsPublisherService(Connection natsConnection) {
         this.natsConnection = natsConnection;
+        log.info("NatsPublisherService initialized");
     }
 
     @Scheduled(fixedRate = 1000)
@@ -32,9 +37,9 @@ public class NatsPublisherService {
             String jsonMessage = objectMapper.writeValueAsString(message);
 
             natsConnection.publish(SUBJECT, jsonMessage.getBytes());
-            System.out.println("Published message to NATS subject '" + SUBJECT + "': " + jsonMessage);
+            log.debug("Published message to NATS subject '{}': {}", SUBJECT, jsonMessage);
         } catch (Exception e) {
-            System.err.println("Error publishing message to NATS: " + e.getMessage());
+            log.error("Error publishing message to NATS subject '{}': {}", SUBJECT, e.getMessage(), e);
         }
     }
 
@@ -43,10 +48,11 @@ public class NatsPublisherService {
         try {
             if (natsConnection != null) {
                 natsConnection.close();
-                System.out.println("NATS connection closed");
+                log.info("NATS connection closed successfully");
             }
         } catch (InterruptedException e) {
-            System.err.println("Error closing NATS connection: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            log.error("Error closing NATS connection: {}", e.getMessage(), e);
         }
     }
 }
