@@ -26,9 +26,7 @@ export default function WebSocketTest() {
 	return (
 		<div className="bg-gray-100 flex items-center justify-center p-4">
 			<div className="bg-white rounded-lg shadow-lg p-8 text-center w-full">
-				<h1 className="text-xl font-semibold mb-4 text-gray-700">
-					WebSocket Test Value
-				</h1>
+				<h1 className="text-xl font-semibold mb-4 text-gray-700">WebSocket Test Value</h1>
 				<div className="mb-4">
 					<span
 						className={`inline-block px-3 py-1 rounded-full text-sm ${

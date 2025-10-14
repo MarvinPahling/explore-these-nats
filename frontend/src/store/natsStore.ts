@@ -4,9 +4,7 @@ interface NatsState {
 	value: number | null;
 	status: "Connecting..." | "Connected" | "Error" | "Disconnected";
 	setValue: (value: number | null) => void;
-	setStatus: (
-		status: "Connecting..." | "Connected" | "Error" | "Disconnected",
-	) => void;
+	setStatus: (status: "Connecting..." | "Connected" | "Error" | "Disconnected") => void;
 }
 
 export const useNatsStore = create<NatsState>((set) => ({

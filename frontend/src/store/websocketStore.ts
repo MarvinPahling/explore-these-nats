@@ -4,9 +4,7 @@ interface WebSocketState {
 	value: number | null;
 	status: "Connecting..." | "Connected" | "Error" | "Disconnected";
 	setValue: (value: number | null) => void;
-	setStatus: (
-		status: "Connecting..." | "Connected" | "Error" | "Disconnected",
-	) => void;
+	setStatus: (status: "Connecting..." | "Connected" | "Error" | "Disconnected") => void;
 }
 
 export const useWebSocketStore = create<WebSocketState>((set) => ({
