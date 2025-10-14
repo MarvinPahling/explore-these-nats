@@ -1,6 +1,7 @@
 package de.ostfalia.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.ostfalia.backend.domain.Message;
 import io.nats.client.Connection;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -28,7 +28,7 @@ public class NatsPublisherService {
     @Scheduled(fixedRate = 1000)
     public void publishMessage() {
         try {
-            Map<String, Object> message = Map.of("test", random.nextInt(1000));
+            Message message = new Message(random.nextInt(1000));
             String jsonMessage = objectMapper.writeValueAsString(message);
 
             natsConnection.publish(SUBJECT, jsonMessage.getBytes());
