@@ -23,6 +23,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("io.nats:jnats:2.20.4")
 }
 
 tasks.withType<Test> {
