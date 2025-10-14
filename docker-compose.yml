@@ -28,7 +28,7 @@ services:
     environment:
       - SPRING_APPLICATION_NAME=backend
       - SERVER_PORT=42069
-      - NATS_URL=nats://nats:4222
+      - NATS_SERVER_URL=nats://nats:4222
     networks:
       - app-network
     depends_on:
