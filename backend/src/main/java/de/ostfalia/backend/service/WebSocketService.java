@@ -1,53 +1,76 @@
 package de.ostfalia.backend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ostfalia.backend.domain.Message;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-@EnableScheduling
-public class WebSocketService {
+public class WebSocketService extends AbstractConnectionService {
 
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Random random = new Random();
 
+    /**
+     * Register a new WebSocket session
+     * @param session The WebSocket session to register
+     */
     public void registerSession(WebSocketSession session) {
         sessions.put(session.getId(), session);
         System.out.println("WebSocket session registered: " + session.getId());
     }
 
+    /**
+     * Unregister a WebSocket session
+     * @param session The WebSocket session to unregister
+     */
     public void unregisterSession(WebSocketSession session) {
         sessions.remove(session.getId());
         System.out.println("WebSocket session unregistered: " + session.getId());
     }
 
-    @Scheduled(fixedRate = 1000)
-    public void broadcastMessage() {
-        Message message = new Message(random.nextInt(1000));
-
+    @Override
+    public void sendMessage(Message message) throws Exception {
+        String jsonMessage = toJson(message);
         sessions.values().forEach(session -> {
             if (session.isOpen()) {
                 try {
-                    String jsonMessage = objectMapper.writeValueAsString(message);
                     session.sendMessage(new TextMessage(jsonMessage));
                     System.out.println("Sent message to " + session.getId() + ": " + jsonMessage);
                 } catch (IOException e) {
-                    System.err.println("Error sending message: " + e.getMessage());
+                    System.err.println("Error sending message to session " + session.getId() + ": " + e.getMessage());
                 }
             }
         });
     }
 
+    @Override
+    public void cleanup() {
+        sessions.values().forEach(session -> {
+            try {
+                if (session.isOpen()) {
+                    session.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Error closing WebSocket session: " + e.getMessage());
+            }
+        });
+        sessions.clear();
+        System.out.println("All WebSocket sessions closed");
+    }
+
+    @Override
+    public boolean isActive() {
+        return !sessions.isEmpty();
+    }
+
+    /**
+     * Get the number of active WebSocket sessions
+     * @return The number of active sessions
+     */
     public int getActiveSessionCount() {
         return sessions.size();
     }
