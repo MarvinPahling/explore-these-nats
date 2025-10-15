@@ -10,15 +10,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    private final TestWebSocketHandler testWebSocketHandler;
+  private final TestWebSocketHandler testWebSocketHandler;
 
-    public WebSocketConfig(TestWebSocketHandler testWebSocketHandler) {
-        this.testWebSocketHandler = testWebSocketHandler;
-    }
+  public WebSocketConfig(TestWebSocketHandler testWebSocketHandler) {
+    this.testWebSocketHandler = testWebSocketHandler;
+  }
 
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(testWebSocketHandler, "/ws/test")
-                .setAllowedOrigins("*");
-    }
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    registry.addHandler(testWebSocketHandler, "/ws/test").setAllowedOrigins("*");
+  }
 }
